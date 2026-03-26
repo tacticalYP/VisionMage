@@ -77,6 +77,7 @@ public class UDPInputReceiver : MonoBehaviour
     // These variables will hold the values received from Python
     public float calcX, calcY, yaw, pitch, CursorX,CursorY;
     public int CurrentState = 0;
+    public string Shape = "";
     private object lockObject = new object();
 
     void Start()
@@ -108,7 +109,7 @@ public class UDPInputReceiver : MonoBehaviour
         while (messageQueue.TryDequeue(out string message))
         {
             string[] values = message.Split(',');
-            if (values.Length == 7)
+            if (values.Length == 8)
             {
                 lock (lockObject)
                 {
@@ -119,6 +120,7 @@ public class UDPInputReceiver : MonoBehaviour
                     CurrentState = int.Parse(values[4]);
                     CursorX = float.Parse(values[5])/1000;
                     CursorY = float.Parse(values[6])/1000;
+                    Shape = values[7];
                 }
             }
         }

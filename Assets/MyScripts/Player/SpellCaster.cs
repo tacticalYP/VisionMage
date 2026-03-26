@@ -17,7 +17,6 @@ public class SpellCaster : MonoBehaviour
     private float[] cooldownTimers = new float[4];
     public SpellDrawer spellDrawer;
 
-    public GameObject waterBallPrefab;
     [SerializeField] private LayerMask aimLayerMask;
 
     // private void Update()
@@ -41,7 +40,7 @@ public class SpellCaster : MonoBehaviour
     //         TryCastSpell(0);
     // }
 
-    public void OnSpell2()
+    public void OnSpell2(GameObject waterBallPrefab)
     {
         // if (context.started)
         //     TryCastSpell(1);

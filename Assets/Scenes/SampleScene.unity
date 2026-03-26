@@ -2479,6 +2479,26 @@ PrefabInstance:
       propertyPath: targetCursor
       value: 
       objectReference: {fileID: 1757612726}
+    - target: {fileID: 647873690516431763, guid: bc94751a64068e54e8ac2c85313c4fc5, type: 3}
+      propertyPath: spellPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 647873690516431763, guid: bc94751a64068e54e8ac2c85313c4fc5, type: 3}
+      propertyPath: 'spellPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 3741920032252983709, guid: a9f6777faa2a8a3499c54db33ddff544, type: 3}
+    - target: {fileID: 647873690516431763, guid: bc94751a64068e54e8ac2c85313c4fc5, type: 3}
+      propertyPath: 'spellPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7146837407506942245, guid: c8256dc6aede33b44bffeccb311c8938, type: 3}
+    - target: {fileID: 647873690516431763, guid: bc94751a64068e54e8ac2c85313c4fc5, type: 3}
+      propertyPath: 'spellPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 7146837407506942245, guid: c8256dc6aede33b44bffeccb311c8938, type: 3}
+    - target: {fileID: 647873690516431763, guid: bc94751a64068e54e8ac2c85313c4fc5, type: 3}
+      propertyPath: 'spellPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 7146837407506942245, guid: c8256dc6aede33b44bffeccb311c8938, type: 3}
     - target: {fileID: 1940433377042520333, guid: bc94751a64068e54e8ac2c85313c4fc5, type: 3}
       propertyPath: gravity
       value: -9.81

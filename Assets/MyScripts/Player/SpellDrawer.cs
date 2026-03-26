@@ -170,7 +170,9 @@ public class SpellDrawer : MonoBehaviour
     List<PDollarRecognizer.Gesture> trainingSet = new List<PDollarRecognizer.Gesture>();
 
     /// temporarily using these shapes
-    string[] spells = { "Triangle", "Square", "Circle", "Star" };
+    string[] spells = { "Triangle", "Square", "Circle", "Zigzag" };
+
+    public GameObject[] spellPrefabs;
 
     SpellCaster spellCaster;
 
@@ -261,7 +263,6 @@ public class SpellDrawer : MonoBehaviour
             RecognizeShape();
             lineRenderer.positionCount = 0;
             lineIndex = 0;
-            spellCaster.OnSpell2();
         }
     }
 
@@ -315,9 +316,14 @@ public class SpellDrawer : MonoBehaviour
         // }
 
         /////////////////////////
+
+        // string result = udp.Shape;
         
-        string result = spells[UnityEngine.Random.Range(0, spells.Length)];
+        int spellId = UnityEngine.Random.Range(0, spells.Length);
+        string result = spells[spellId];
 
         Debug.Log("Detected: " + result);
+
+        spellCaster.OnSpell2(spellPrefabs[spellId]);
     }
 }
