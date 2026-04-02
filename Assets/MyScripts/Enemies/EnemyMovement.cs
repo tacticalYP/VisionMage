@@ -14,20 +14,22 @@ public class EnemyMovement : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
-        EnemyHealth health = GetComponent<EnemyHealth>();
+        // animator = GetComponent<Animator>();
+        // EnemyHealth health = GetComponent<EnemyHealth>();
 
-        if (health != null)
-        {
-            agent.speed = health.stats.moveSpeed;
-        }
+        // if (health != null)
+        // {
+        //     agent.speed = health.stats.moveSpeed;
+        // }
         
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 
         if (playerObject != null)
         {
+            Debug.Log("got player");
             player = playerObject.transform;
         }
+
     }
 
     void Update()
@@ -55,7 +57,7 @@ public class EnemyMovement : MonoBehaviour
             agent.ResetPath();
         }
 
-        animator.SetFloat("Speed", agent.velocity.magnitude);
+        // animator.SetFloat("Speed", agent.velocity.magnitude);
 
         // if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         // {

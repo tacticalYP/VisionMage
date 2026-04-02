@@ -317,10 +317,9 @@ public class SpellDrawer : MonoBehaviour
 
         /////////////////////////
 
-        // string result = udp.Shape;
-        
+        string result = udp.Shape;
         int spellId = UnityEngine.Random.Range(0, spells.Length);
-        string result = spells[spellId];
+        // string result = spells[spellId];
 
         Debug.Log("Detected: " + result);
 
