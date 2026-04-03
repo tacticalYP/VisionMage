@@ -290,11 +290,10 @@ public class PlayerMovement : MonoBehaviour
     private bool isJumping;
     private bool jumpRequested = false;
     private bool hasLanded = false;
-
     private float currentSpeed;
 
-    public PodiumVanish gateScript;
-    public PodiumVanish podiumScript;
+    private PodiumVanish gateScript;
+    private PodiumVanish podiumScript;
 
     private void Awake()
     {
@@ -446,17 +445,20 @@ public class PlayerMovement : MonoBehaviour
             hasLanded = true; // Set to true so this never runs again
             gateScript.StartSinking();
             podiumScript.StartSinking();
+
+            // Stop the player on same place
+            animator.Play("Idle",0);
+            animator.speed = 0;
+            this.enabled = false;
         }
     }
 
     void OnSceneFinishedLoading(Scene scene, LoadSceneMode mode)
     {   
-        
-        // if (sinkObj != null)
-        // {   
-            Debug.Log("scene change called");
+        if (scene.name == "BossRoom")
+        {   
             podiumScript = GameObject.Find("podium").GetComponent<PodiumVanish>();
             gateScript = GameObject.Find("gate").GetComponent<PodiumVanish>();
-        // }
+        }
     }
 }

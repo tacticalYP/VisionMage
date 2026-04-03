@@ -24,7 +24,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         // Temporarly press K to damage enemy
         if (Keyboard.current != null && Keyboard.current.kKey.wasPressedThisFrame)
         {
-            TakeDamage(10);
+            TakeDamage(100);
         }
     }
 

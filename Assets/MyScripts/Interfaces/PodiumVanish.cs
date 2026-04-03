@@ -15,9 +15,16 @@ public partial class PodiumVanish : MonoBehaviour
     private Vector3 startPosition;
     private float timer = 0f;
 
+    GameObject playerObj;
+    public GameObject Minotaur;
+
+    private Animator MinotaurAnimator;
+
+
     void Start()
     {
         startPosition = transform.position;
+        playerObj = GameObject.FindWithTag("Player");
     }
 
     void Update()
@@ -32,6 +39,14 @@ public partial class PodiumVanish : MonoBehaviour
     public void StartSinking()
     {   
         Debug.Log("sink called");
+
+        if (Minotaur != null)
+        {   
+            MinotaurAnimator = Minotaur.GetComponent<Animator>();
+            MinotaurAnimator.SetTrigger("IntroAttack");
+            MinotaurAnimator.speed = 0.5f;
+        }
+
         isSinking = true;
     }
 
@@ -66,6 +81,19 @@ public partial class PodiumVanish : MonoBehaviour
         {
             Debug.Log("Sinking Complete. Object Vanished.");
             gameObject.SetActive(false);
+
+            if (playerObj != null)
+            {
+                playerObj.GetComponent<PlayerMovement>().enabled = true;
+                playerObj.GetComponent<PlayerMovement>().animator.speed = 1;
+            }
+
+            if (Minotaur != null)
+            {
+               Minotaur.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
+               MinotaurAnimator.speed = 1;
+            }
+            
         }
     }
 }

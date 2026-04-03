@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyAttack : MonoBehaviour
+public class MinotaurAttack : MonoBehaviour
 {
     public Transform player;
 
