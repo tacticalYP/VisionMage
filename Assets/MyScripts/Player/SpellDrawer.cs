@@ -154,6 +154,7 @@ public class SpellDrawer : MonoBehaviour
 {
     public UDPInputReceiver udp;
     public Transform targetCursor;
+    public Transform FollowPoint;
     public LineRenderer lineRenderer;
 
     [Header("Drawing Settings")]
@@ -170,9 +171,10 @@ public class SpellDrawer : MonoBehaviour
     List<PDollarRecognizer.Gesture> trainingSet = new List<PDollarRecognizer.Gesture>();
 
     /// temporarily using these shapes
-    string[] spells = { "Triangle", "Square", "Circle", "Zigzag" };
+    private Dictionary<string,int> spellIds= new Dictionary<string, int>{ {"Triangle",1}, {"Square",2}, {"Circle",0},{ "Zigzag",3} };
 
     public GameObject[] spellPrefabs;
+    private Dictionary<string, GameObject> spellMapping = new Dictionary<string, GameObject>();
 
     SpellCaster spellCaster;
 
@@ -181,64 +183,6 @@ public class SpellDrawer : MonoBehaviour
         lineRenderer.positionCount = 0;
         spellCaster = GetComponent<SpellCaster>();
 
-        // recognizer.AddTemplate("Line", new List<Vector2>{
-        //     new Vector2(0,0),
-        //     new Vector2(1,0)
-        // });
-
-        // recognizer.AddTemplate("V", new List<Vector2>{
-        //     new Vector2(0,1),
-        //     new Vector2(0.5f,0),
-        //     new Vector2(1,1)
-        // });
-
-        // recognizer.AddTemplate("Triangle", new List<Vector2>{
-        //     new Vector2(0,0),
-        //     new Vector2(0.5f,1),
-        //     new Vector2(1,0),
-        //     new Vector2(0,0)
-        // });
-
-
-    //////////////////////////////////
-    
-        // Triangle: 3 sharp corners, returning to start
-    // List<Vector2> triangle = new List<Vector2> {
-    //     new Vector2(0f, 1f),    // Top
-    //     new Vector2(0.86f, -0.5f), // Bottom Right
-    //     new Vector2(-0.86f, -0.5f), // Bottom Left
-    //     new Vector2(0f, 1f)     // Back to Top
-    // };
-    // trainingSet.Add(new PDollarRecognizer.Gesture("Triangle", triangle));
-
-    // // Square: 4 points, returning to start
-    // List<Vector2> square = new List<Vector2> {
-    //     new Vector2(-1f, 1f),  // Top Left
-    //     new Vector2(1f, 1f),   // Top Right
-    //     new Vector2(1f, -1f),  // Bottom Right
-    //     new Vector2(-1f, -1f), // Bottom Left
-    //     new Vector2(-1f, 1f)   // Back to Top Left
-    // };
-    // trainingSet.Add(new PDollarRecognizer.Gesture("Square", square));
-
-    // // Circle: 16 points to create a smooth curvature
-    // List<Vector2> circle = new List<Vector2>();
-    // for (int i = 0; i <= 16; i++) {
-    //     float angle = i * Mathf.PI * 2 / 16;
-    //     circle.Add(new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)));
-    // }
-    // trainingSet.Add(new PDollarRecognizer.Gesture("Circle", circle));
-
-    // // Star: 5-point star (outer and inner points)
-    // List<Vector2> star = new List<Vector2>();
-    // float outerRad = 1.0f;
-    // float innerRad = 0.4f;
-    // for (int i = 0; i < 11; i++) {
-    //     float angle = (i * 36 - 90) * Mathf.Deg2Rad;
-    //     float r = (i % 2 == 0) ? outerRad : innerRad;
-    //     star.Add(new Vector2(Mathf.Cos(angle) * r, Mathf.Sin(angle) * r));
-    // }
-    // trainingSet.Add(new PDollarRecognizer.Gesture("Star", star));
     }
 
     void Update()
@@ -255,7 +199,7 @@ public class SpellDrawer : MonoBehaviour
         {   
             Vector3 locaPos = new Vector3((-normX * inputScale)+4, (-normY * inputScale)+4, 0);
             // Move the cursor visual (TransformPoint converts local to world for the visual)
-            targetCursor.position = transform.TransformPoint(locaPos);
+            // targetCursor.position = FollowPoint.transform.TransformPoint(locaPos);
             AddPoint(localPos);
         }
         else if (lineIndex != 0)
@@ -318,8 +262,8 @@ public class SpellDrawer : MonoBehaviour
         /////////////////////////
 
         string result = udp.Shape;
-        int spellId = UnityEngine.Random.Range(0, spells.Length);
-        // string result = spells[spellId];
+        // int spellId = UnityEngine.Random.Range(0, spells.Length);
+        int spellId = spellIds[result];
 
         Debug.Log("Detected: " + result);
 

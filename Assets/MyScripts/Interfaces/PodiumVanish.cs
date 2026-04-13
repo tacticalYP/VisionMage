@@ -54,19 +54,19 @@ public partial class PodiumVanish : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // 1. Calculate how far we have sunk so far
+        //Calculate how far we have sunk so far
         // We calculate a single 'downwardOffset' based on time and speed
         float downwardOffset = sinkSpeed * timer;
         
-        // 2. Calculate the Vertical (Y) target
+        //Calculate the Vertical (Y) target
         float newY = startPosition.y - downwardOffset;
 
-        // 3. Calculate Vibration (Shake) relative to ZERO
+        
         // PerlinNoise returns 0 to 1, so -0.5f gives us -0.5 to 0.5
         float shakeX = (Mathf.PerlinNoise(Time.time * shakeSpeed, 0) - 0.5f) * shakeIntensity;
         float shakeZ = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - 0.5f) * shakeIntensity;
 
-        // 4. Set the position REFRESHED from the startPosition every frame
+        
         // This prevents "drifting" because we aren't adding to the current position, 
         // we are setting it based on the original anchor point.
         transform.position = new Vector3(
@@ -75,7 +75,7 @@ public partial class PodiumVanish : MonoBehaviour
             startPosition.z + shakeZ
         );
 
-        // 5. Check if it's deep enough to vanish
+        
         // Use the calculated newY to check the distance
         if (newY < startPosition.y - sinkDistance)
         {
@@ -84,8 +84,10 @@ public partial class PodiumVanish : MonoBehaviour
 
             if (playerObj != null)
             {
-                playerObj.GetComponent<PlayerMovement>().enabled = true;
-                playerObj.GetComponent<PlayerMovement>().animator.speed = 1;
+                // playerObj.GetComponent<PlayerMovement>().enabled = true;
+                // playerObj.GetComponent<PlayerMovement>().animator.speed = 1;
+                playerObj.GetComponent<ThirdPersonControllerr>().enabled = true;
+                playerObj.GetComponent<ThirdPersonControllerr>().animator.speed = 1;
             }
 
             if (Minotaur != null)

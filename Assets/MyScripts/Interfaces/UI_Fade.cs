@@ -20,7 +20,7 @@ public class UI_Fade : MonoBehaviour
         }
         else
         {
-            // If another one exists (e.g., you manually put one in the Boss Scene), 
+            // If another one exists,
             // destroy this one so they don't fight.
             Destroy(gameObject);
         }

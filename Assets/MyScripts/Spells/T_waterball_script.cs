@@ -12,7 +12,14 @@ public class T_waterball_script : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.linearVelocity = transform.forward * speed;
+        if (rb != null)
+        {
+            rb.linearVelocity = transform.forward * speed;
+        }
+        else
+        {
+            Debug.LogError("No Rigidbody found on " + gameObject.name);
+        }
 
         Destroy(gameObject, lifetime);
     }
@@ -26,7 +33,14 @@ public class T_waterball_script : MonoBehaviour
     // }
 
     void OnTriggerEnter(Collider other)
-    {
+    {   
+        if (other.CompareTag("Ground1") || other.CompareTag("Player"))
+        {
+            return;
+        }
+
+        Debug.Log(other.name);
+
         IDamageable damageable = other.GetComponent<IDamageable>();
 
         if (damageable != null)
@@ -38,6 +52,6 @@ public class T_waterball_script : MonoBehaviour
 
         Destroy(splash,2f);
 
-        Destroy(gameObject);
+        Destroy(gameObject,0.1f);
     }
 }

@@ -1,105 +1,111 @@
 
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 public class UDPPlayerMovement : MonoBehaviour
 {
-    public float gravity = -9.81f;
+    [Header("References")]
     public Animator animator;
     private CharacterController controller;
     public UDPInputReceiver dataStream;
     
-    [Header("Rotation Settings")]
-    public float rotationSensitivity = 100f;
-    public float rotationSmoothing = 0.005f;
+    [Header("Rotation Settings (Head)")]
+    public float yawDeadzone = 0.5f;  
+    public float pitchDeadzone = 0f; 
+    
+    public float yawSpeedLeft = 20f;  
+    public float yawSpeedRight = 15f; 
+    
+    // WARNING: Change this back to 20 or 30! 
+    // If you leave it at 25000 now that it's fixed, you will break the space-time continuum.
+    public float pitchSpeed = 300f;  
 
-    [Header("Movement Settings")]
-    public float moveSpeed = 5f;
+    [Header("Movement Settings (Hand)")]
+    public float moveSpeed = 2f;
+    public float handDeadzone = 0.5f;  
+    public float gravity = -9.81f;
+
+    private float accumulatedYaw = 0f;
+    private float accumulatedPitch = 0f;
     private Vector3 velocity;
-    private float smoothYaw;
-    private float smoothPitch;
-    private Vector3 moveTarget;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-
+        accumulatedYaw = transform.localEulerAngles.y;
+        
+        float startPitch = Camera.main.transform.localEulerAngles.x;
+        if (startPitch > 180f) startPitch -= 360f;
+        accumulatedPitch = startPitch;
     }
 
     private void Update()
     {
+        if (dataStream == null) return;
+
+        HandleRotation();
         HandleMovement();
         ApplyGravity();
-        UpdateAnimator();
     }
 
-    // private void HandleMovement()
-    // {
-    //     if (dataStream == null) return;
+    private void HandleRotation()
+    {
+        // --- YAW LOGIC (Left / Right) ---
+        if (Mathf.Abs(dataStream.yaw) > yawDeadzone)
+        {
+            float activeYaw = Mathf.Abs(dataStream.yaw) - yawDeadzone;
+            float direction = Mathf.Sign(dataStream.yaw);
+            
+            float currentYawSpeed = (direction < 0) ? yawSpeedLeft : yawSpeedRight;
+            accumulatedYaw += activeYaw * direction * currentYawSpeed * Time.deltaTime;
+        }
 
-    //     moveTarget = (new Vector3(dataStream.calcX, 0, dataStream.calcY))* moveSpeed * Time.deltaTime;
-    //     controller.Move(moveTarget);
+        // --- PITCH LOGIC (Up / Down) ---
+        if (Mathf.Abs(dataStream.pitch) > pitchDeadzone) 
+        {
+            float activePitch = Mathf.Abs(dataStream.pitch) - pitchDeadzone;
+            float direction = Mathf.Sign(dataStream.pitch);
+            
+            // THE FIX IS HERE! -= instead of +=
+            // This perfectly inverts the controls so you escape the clamp!
+            // accumulatedPitch += activePitch * direction * pitchSpeed * Time.deltaTime;
+            float curvedPitch = activePitch*activePitch * activePitch * Mathf.Sign(activePitch);
+        
+            accumulatedPitch += curvedPitch * direction * pitchSpeed * Time.deltaTime;
+        }
 
-    //     float targetYaw = dataStream.yaw * rotationSensitivity;
-    //     float targetPitch = dataStream.pitch * rotationSensitivity;
-    //     Quaternion targetRotation = Quaternion.Euler(targetPitch, targetYaw, 0);
+        // The Clamp
+        accumulatedPitch = Mathf.Clamp(accumulatedPitch, -89f, 89f);
 
-    //     float smoothingFactor = 10f; 
-    //     Camera.main.transform.localRotation = Quaternion.Slerp(
-    //         Camera.main.transform.localRotation, 
-    //         targetRotation, 
-    //         smoothingFactor * Time.deltaTime
-    //     );
-
-    //     Debug.Log($"{moveTarget.x}, {moveTarget.z}, {dataStream.yaw}, {dataStream.pitch}");
-    // }
-
-        // Add these private variables to your class to store the total rotation
-    private float currentYaw;
-    private float currentPitch;
+        transform.localRotation = Quaternion.Euler(0, accumulatedYaw, 0); 
+        Camera.main.transform.localRotation = Quaternion.Euler(accumulatedPitch, 0, 0); 
+    }
 
     private void HandleMovement()
     {
-        if (dataStream == null) return;
+        float moveX = dataStream.calcX;
+        float moveY = dataStream.calcY; 
 
-        moveTarget = (new Vector3(dataStream.calcX, 0, dataStream.calcY)) * moveSpeed * Time.deltaTime;
-        controller.Move(moveTarget);
+        if (Mathf.Abs(moveX) < handDeadzone) moveX = 0;
+        if (Mathf.Abs(moveY) < handDeadzone) moveY = 0;
 
-        currentYaw = dataStream.yaw * rotationSensitivity;
-        currentPitch = dataStream.pitch * rotationSensitivity;
+        Vector3 moveDirection = (transform.right * moveX) + (transform.forward * moveY);
+        controller.Move(moveDirection * moveSpeed * Time.deltaTime);
 
-        currentPitch = Mathf.Clamp(currentPitch, -89f, 89f);
-
-        Quaternion targetCameraRotation = Quaternion.Euler(currentPitch, 0, 0);
-
-        Quaternion targetPlayerRotation = Quaternion.Euler(0, currentYaw, 0);
-        
-        Camera.main.transform.localRotation = Quaternion.Slerp(
-            Camera.main.transform.localRotation, 
-            targetCameraRotation, 
-            rotationSmoothing
-        );
-
-        transform.localRotation = Quaternion.Slerp(
-            transform.localRotation, 
-            targetPlayerRotation, 
-            rotationSmoothing
-        );
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", moveDirection.magnitude * moveSpeed);
+        }
     }
 
     private void ApplyGravity()
     {   
-        float displacementY = (velocity.y * Time.deltaTime) + (0.5f * gravity * Mathf.Pow(Time.deltaTime, 2));
+        if (controller.isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f; 
+        }
 
         velocity.y += gravity * Time.deltaTime;
-
-        controller.Move(new Vector3(0, displacementY, 0));
-    }
-
-    private void UpdateAnimator()
-    {
-        float animationSpeed = moveTarget.magnitude * moveSpeed;
-        animator.SetFloat("Speed", animationSpeed);
+        controller.Move(new Vector3(0, velocity.y, 0) * Time.deltaTime);
     }
 }

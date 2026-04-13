@@ -39,6 +39,7 @@ public class PlayerSpawnHandler : MonoBehaviour
             {
                 Debug.Log("3");
                 player.transform.position = spawn.transform.position;
+                player.GetComponent<PlayerHealth>().respawnPoint = spawn.transform;
             }
         }
     }

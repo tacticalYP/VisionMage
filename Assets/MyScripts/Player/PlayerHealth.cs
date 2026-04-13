@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.AI; // Needed if your player uses a NavMeshAgent
+using UnityEngine.AI;
 
 public class PlayerHealth : MonoBehaviour
 {
