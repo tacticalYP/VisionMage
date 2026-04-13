@@ -11,8 +11,8 @@ public class ThirdPersonCamera : MonoBehaviour
     
     [Header("Smoothing")]
     [Range(0.01f, 1.0f)]
-    public float rotationSmoothTime = 1f; // Time to reach target rotation
-    public float positionSmoothTime = 1f; // Time to reach target position
+    public float rotationSmoothTime = 0.2f; // Time to reach target rotation
+    public float positionSmoothTime = 0.2f; // Time to reach target position
 
     // Internal state for smoothing
     private Vector3 currentVelocity = Vector3.zero;

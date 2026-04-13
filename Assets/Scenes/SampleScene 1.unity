@@ -1567,6 +1567,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: bed7a092d53e7c748bd65db98cebf9d6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 100014, guid: bed7a092d53e7c748bd65db98cebf9d6, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -2086,9 +2090,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ThirdPersonCamera
   target: {fileID: 703975645}
-  offset: {x: 15, y: 10, z: -40}
-  smoothSpeed: 2
   inputSource: {fileID: 255321146}
+  offset: {x: 15, y: 10, z: -40}
+  rotationSmoothTime: 0.2
+  positionSmoothTime: 0.2
 --- !u!114 &778385391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2459,12 +2464,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f928bbd066ab1e4dad02fb57d9e8172, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UDPPlayerMovement
-  gravity: -30
   animator: {fileID: 1207514362}
   dataStream: {fileID: 255321146}
-  rotationSensitivity: 100
-  rotationSmoothing: 0.005
+  yawDeadzone: 0.5
+  pitchDeadzone: 0
+  yawSpeedLeft: 20
+  yawSpeedRight: 15
+  pitchSpeed: 300
   moveSpeed: 50
+  handDeadzone: 0.5
+  gravity: -30
 --- !u!114 &1207514369
 MonoBehaviour:
   m_ObjectHideFlags: 0
